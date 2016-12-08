@@ -11,7 +11,10 @@
         | definido en él para notificar los clics sobre los productos.     |
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-        <product
+        
+
+        <product 
+            (productoSeleccionado)="verDetallesProducto($event)"
             *ngFor="let product of _products"
             [data]="product"
             class="column">
