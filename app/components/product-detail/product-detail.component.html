@@ -19,7 +19,7 @@
             | publicación.                                                     |
             |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-            <span>Publicado {{ _product.publishedDate }}</span>
+            <span>Publicado {{ _product.publishedDate | CalculaTiempo  }}</span>
         </p>
         <p [innerHtml]="_product.description"></p>
         <user-profile [userId]="_product.seller.id"></user-profile>
