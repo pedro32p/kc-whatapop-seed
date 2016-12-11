@@ -10,12 +10,22 @@ import { BackendUri } from "../app.settings";
 @Injectable()
 export class ProductService {
 
+    //onSearch: ProductFilter;
+
     constructor(
         @Inject(BackendUri) private _backendUri: string,
         private _http: Http) { }
 
     getProducts(filter: ProductFilter = undefined): Observable<Product[]> {
 
+        //this.onSearch = filter;
+
+        /*let search = new URLSearchParams();
+        search.set("text", this.onSearch.text);
+        search.set("category", this.onSearch.category);*/
+
+        //console.log(filter.state);
+        
         /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
         | Pink Path                                                        |
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
@@ -58,6 +68,12 @@ export class ProductService {
         |   - Búsqueda por estado:                                         |
         |       state=x (siendo x el estado)                               |
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+        
+
+        /*return this._http
+                   .get(`${this._backendUri}/products?text=this.onSearch.text`)
+                   .map((data: Response): Product[] => Product.fromJsonToList(data.json()));*/
 
         return this._http
                    .get(`${this._backendUri}/products?_sort=publishedDate&_order=DESC `)

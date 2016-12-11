@@ -31,5 +31,6 @@ export class ProductFilterComponent implements OnInit, OnDestroy {
 
     notifyHost(): void {
         this.onSearch.emit(this._productFilter);
+       // console.log(this._productFilter);
     }
 }
