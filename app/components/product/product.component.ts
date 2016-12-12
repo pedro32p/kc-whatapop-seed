@@ -9,7 +9,7 @@ export class ProductComponent {
 
     @Input() data: Product;
 
-    @Output() productoSeleccionado: EventEmitter<any> = new EventEmitter();
+    @Output() productoSeleccionado: EventEmitter<Product> = new EventEmitter<Product>();
 
     /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
     | Green Path                                                       |
