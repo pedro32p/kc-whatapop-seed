@@ -21,7 +21,7 @@ export class ProductsCollectionComponent implements OnDestroy, OnInit {
         this._filterStream$
             .switchMap((filter: ProductFilter) => this._productService.getProducts(filter))
             .subscribe((products: Product[]) => this._products = products);
-        this.filterCollection(null);
+        this.filterCollection(null);   
     }
 
     ngOnDestroy(): void {

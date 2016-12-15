@@ -10,7 +10,7 @@ import { BackendUri } from "../app.settings";
 @Injectable()
 export class ProductService {
 
-    //onSearch: ProductFilter;
+    filter: ProductFilter;
 
     constructor(
         @Inject(BackendUri) private _backendUri: string,
@@ -18,14 +18,43 @@ export class ProductService {
 
     getProducts(filter: ProductFilter = undefined): Observable<Product[]> {
 
-        //this.onSearch = filter;
+        this.filter = filter;
 
-        /*let search = new URLSearchParams();
-        search.set("text", this.onSearch.text);
-        search.set("category", this.onSearch.category);*/
+        //console.log("hola desde fuera");
 
-        //console.log(filter.state);
+        if(this.filter !== null) {
+
+            console.log(this.filter.text);
+            console.log(this.filter.category);
+
+            if(this.filter.text === "") {
+                this.filter.text = undefined;
+            }
+            if(this.filter.category === "") {
+                this.filter.category = undefined;
+            }
+            let search = new URLSearchParams();
+            search.set("name", this.filter.text);
+            search.set("category.id", this.filter.category);
+            search.set("state", "selling");
+
+            let options = new RequestOptions();
+            options.search = search;
+            console.log(this.filter.text);
+            console.log(this.filter.category);
+            
+            return this._http.get(`${this._backendUri}/products?_sort=publishedDate&_order=DESC`, options)
+                             .map((data: Response): Product[] => Product.fromJsonToList(data.json()));
+        }
+        else{
+            console.log("en el else");
+            return this._http
+                            .get(`${this._backendUri}/products?_sort=publishedDate&_order=DESC&state=selling `)
+                            .map((data: Response): Product[] => Product.fromJsonToList(data.json()));
+        }
         
+           
+ 
         /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
         | Pink Path                                                        |
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
@@ -69,15 +98,6 @@ export class ProductService {
         |       state=x (siendo x el estado)                               |
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-        
-
-        /*return this._http
-                   .get(`${this._backendUri}/products?text=this.onSearch.text`)
-                   .map((data: Response): Product[] => Product.fromJsonToList(data.json()));*/
-
-        return this._http
-                   .get(`${this._backendUri}/products?_sort=publishedDate&_order=DESC `)
-                   .map((data: Response): Product[] => Product.fromJsonToList(data.json()));
     }
 
     getProduct(productId: number): Observable<Product> {
