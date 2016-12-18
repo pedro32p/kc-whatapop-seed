@@ -11,11 +11,10 @@ export class SoldProductsResolve implements Resolve<Product[]> {
 
     constructor(private _productService: ProductService) { }
 
-    private _productFilter: ProductFilter = { state: "sold"};
-
+    private _nuevoFiltro: ProductFilter = {state: "sold"};
 
     resolve(ruta: ActivatedRouteSnapshot ): Observable<Product[]>{
-        return this._productService.getProducts(this._productFilter);
+        return this._productService.getProducts(this._nuevoFiltro);
     }
 
     /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|

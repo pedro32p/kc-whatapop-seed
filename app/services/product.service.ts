@@ -10,8 +10,7 @@ import { BackendUri } from "../app.settings";
 @Injectable()
 export class ProductService {
 
-
-    private consultaGet: string;
+    private consulta: string;
 
     constructor(
         @Inject(BackendUri) private _backendUri: string,
@@ -19,55 +18,26 @@ export class ProductService {
 
     getProducts(filter: ProductFilter = undefined): Observable<Product[]> {
 
-         this.consultaGet = `?_sort=publishedDate&_order=DESC`;
+         this.consulta = `?_sort=publishedDate&_order=DESC`;
          let options = new RequestOptions();
          let search = new URLSearchParams();
-
+    
          if(filter){
-            console.log("Aquí entra 1");
-            // if(filter.text !== "") {
-            //     console.log("entra en el vacio");
-            //         typeof filter.text === 'undefined';
-            // }
             if(typeof filter.text !== 'undefined' && filter.text !== ""){
-                console.log("Aquí entra 2");
-                console.log(typeof filter.text);
-                console.log("Estoy dentro de filter.text !== undefined");
                 search.set("name", filter.text);
-                //this.consultaGet = `${this.consultaGet}&q=${filter.text}`;
             }
             if(typeof filter.category !== 'undefined') {
-                console.log("Aquí entra 3");
                 search.set("category.id", filter.category);
-                //this.consultaGet = `${this.consultaGet}&category.id=${filter.category}`;
             }
-            // if(filter){
-            // console.log("Aquí entra 4");
-            // console.log(filter);
-            // console.log(filter.state);
-                if(typeof filter.state !== 'undefined'){
-                    console.log("Aquí entra 4");
-                    search.set("state", "sold")
-                    //this.consultaGet = `${this.consultaGet}&state=${filter.state}`;
-                }
-        //    }
+            if(typeof filter.state !== 'undefined'){
+                search.set("state", "sold")
+            }
          }
-        
-        //  if(filter){
-        //     console.log("Aquí entra 4");
-        //     console.log(filter);
-        //     console.log(filter.state);
-        //     if(typeof filter.state !== 'undefined'){
-        //         search.set("state", "sold")
-        //         //this.consultaGet = `${this.consultaGet}&state=${filter.state}`;
-        //     }
-        //  }
 
          options.search = search;
 
           return this._http
-                   //.get(`${this._backendUri}/products${this.consultaGet}`)
-                   .get(`${this._backendUri}/products${this.consultaGet}`, options)
+                   .get(`${this._backendUri}/products${this.consulta}`, options)
                    .map((data: Response): Product[] => Product.fromJsonToList(data.json()));
     }
            
@@ -80,7 +50,7 @@ export class ProductService {
         |                                                                  |
         | En la documentación de 'JSON Server' tienes detallado cómo hacer |
         | la ordenación de los datos en tus peticiones, pero te ayudo      |
-        | igualmente. La consultaGet debe tener estos parámetros:          |
+        | igualmente. La consulta debe tener estos parámetros:          |
         |                                                                  |
         |   _sort=publishedDate&_order=DESC                                |
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -93,7 +63,7 @@ export class ProductService {
         |                                                                  |
         | En la documentación de 'JSON Server' tienes detallado cómo       |
         | filtrar datos en tus peticiones, pero te ayudo igualmente. La    |
-        | consultaGet debe tener estos parámetros:                         |
+        | consulta debe tener estos parámetros:                         |
         |                                                                  |
         |   - Búsqueda por texto:                                          |
         |       q=x (siendo x el texto)                                    |
@@ -109,7 +79,7 @@ export class ProductService {
         |                                                                  |
         | En la documentación de 'JSON Server' tienes detallado cómo       |
         | filtrar datos en tus peticiones, pero te ayudo igualmente. La    |
-        | consultaGet debe tener estos parámetros:                         |
+        | consulta debe tener estos parámetros:                         |
         |                                                                  |
         |   - Búsqueda por estado:                                         |
         |       state=x (siendo x el estado)                               |
