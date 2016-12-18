@@ -10,7 +10,8 @@ import { BackendUri } from "../app.settings";
 @Injectable()
 export class ProductService {
 
-    filter: ProductFilter;
+
+    private consultaGet: string;
 
     constructor(
         @Inject(BackendUri) private _backendUri: string,
@@ -18,41 +19,57 @@ export class ProductService {
 
     getProducts(filter: ProductFilter = undefined): Observable<Product[]> {
 
-        this.filter = filter;
+         this.consultaGet = `?_sort=publishedDate&_order=DESC`;
+         let options = new RequestOptions();
+         let search = new URLSearchParams();
 
-        //console.log("hola desde fuera");
-
-        if(this.filter !== null) {
-
-            console.log(this.filter.text);
-            console.log(this.filter.category);
-
-            if(this.filter.text === "") {
-                this.filter.text = undefined;
+         if(filter){
+            console.log("Aquí entra 1");
+            // if(filter.text !== "") {
+            //     console.log("entra en el vacio");
+            //         typeof filter.text === 'undefined';
+            // }
+            if(typeof filter.text !== 'undefined' && filter.text !== ""){
+                console.log("Aquí entra 2");
+                console.log(typeof filter.text);
+                console.log("Estoy dentro de filter.text !== undefined");
+                search.set("name", filter.text);
+                //this.consultaGet = `${this.consultaGet}&q=${filter.text}`;
             }
-            if(this.filter.category === "") {
-                this.filter.category = undefined;
+            if(typeof filter.category !== 'undefined') {
+                console.log("Aquí entra 3");
+                search.set("category.id", filter.category);
+                //this.consultaGet = `${this.consultaGet}&category.id=${filter.category}`;
             }
-            let search = new URLSearchParams();
-            search.set("name", this.filter.text);
-            search.set("category.id", this.filter.category);
-            search.set("state", "selling");
-
-            let options = new RequestOptions();
-            options.search = search;
-            console.log(this.filter.text);
-            console.log(this.filter.category);
-            
-            return this._http.get(`${this._backendUri}/products?_sort=publishedDate&_order=DESC`, options)
-                             .map((data: Response): Product[] => Product.fromJsonToList(data.json()));
-        }
-        else{
-            console.log("en el else");
-            return this._http
-                            .get(`${this._backendUri}/products?_sort=publishedDate&_order=DESC&state=selling `)
-                            .map((data: Response): Product[] => Product.fromJsonToList(data.json()));
-        }
+            // if(filter){
+            // console.log("Aquí entra 4");
+            // console.log(filter);
+            // console.log(filter.state);
+                if(typeof filter.state !== 'undefined'){
+                    console.log("Aquí entra 4");
+                    search.set("state", "sold")
+                    //this.consultaGet = `${this.consultaGet}&state=${filter.state}`;
+                }
+        //    }
+         }
         
+        //  if(filter){
+        //     console.log("Aquí entra 4");
+        //     console.log(filter);
+        //     console.log(filter.state);
+        //     if(typeof filter.state !== 'undefined'){
+        //         search.set("state", "sold")
+        //         //this.consultaGet = `${this.consultaGet}&state=${filter.state}`;
+        //     }
+        //  }
+
+         options.search = search;
+
+          return this._http
+                   //.get(`${this._backendUri}/products${this.consultaGet}`)
+                   .get(`${this._backendUri}/products${this.consultaGet}`, options)
+                   .map((data: Response): Product[] => Product.fromJsonToList(data.json()));
+    }
            
  
         /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
@@ -63,7 +80,7 @@ export class ProductService {
         |                                                                  |
         | En la documentación de 'JSON Server' tienes detallado cómo hacer |
         | la ordenación de los datos en tus peticiones, pero te ayudo      |
-        | igualmente. La querystring debe tener estos parámetros:          |
+        | igualmente. La consultaGet debe tener estos parámetros:          |
         |                                                                  |
         |   _sort=publishedDate&_order=DESC                                |
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -76,7 +93,7 @@ export class ProductService {
         |                                                                  |
         | En la documentación de 'JSON Server' tienes detallado cómo       |
         | filtrar datos en tus peticiones, pero te ayudo igualmente. La    |
-        | querystring debe tener estos parámetros:                         |
+        | consultaGet debe tener estos parámetros:                         |
         |                                                                  |
         |   - Búsqueda por texto:                                          |
         |       q=x (siendo x el texto)                                    |
@@ -92,13 +109,11 @@ export class ProductService {
         |                                                                  |
         | En la documentación de 'JSON Server' tienes detallado cómo       |
         | filtrar datos en tus peticiones, pero te ayudo igualmente. La    |
-        | querystring debe tener estos parámetros:                         |
+        | consultaGet debe tener estos parámetros:                         |
         |                                                                  |
         |   - Búsqueda por estado:                                         |
         |       state=x (siendo x el estado)                               |
         |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-    }
 
     getProduct(productId: number): Observable<Product> {
         return this._http

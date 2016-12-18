@@ -1,7 +1,22 @@
 import { Injectable } from "@angular/core";
+import { ActivatedRouteSnapshot, Resolve } from "@angular/router";
+import { Observable } from "rxjs/Observable"
+
+import { Product } from "../models/product";
+import { ProductService } from "../services/product.service";
+import { ProductFilter } from "../models/product-filter";
 
 @Injectable()
-export class SoldProductsResolve {
+export class SoldProductsResolve implements Resolve<Product[]> {
+
+    constructor(private _productService: ProductService) { }
+
+    private _productFilter: ProductFilter = { state: "sold"};
+
+
+    resolve(ruta: ActivatedRouteSnapshot ): Observable<Product[]>{
+        return this._productService.getProducts(this._productFilter);
+    }
 
     /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
     | Yellow Path                                                      |
