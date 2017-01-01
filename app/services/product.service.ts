@@ -18,13 +18,16 @@ export class ProductService {
 
     getProducts(filter: ProductFilter = undefined): Observable<Product[]> {
 
-         this.consulta = `?_sort=publishedDate&_order=DESC`;
+         
          let options = new RequestOptions();
          let search = new URLSearchParams();
-    
+
+         search.set("_sort","publishedDate");
+         search.set("_order","DESC");
+
          if(filter){
             if(typeof filter.text !== 'undefined' && filter.text !== ""){
-                search.set("name", filter.text);
+                search.set("q", filter.text);
             }
             if(typeof filter.category !== 'undefined') {
                 search.set("category.id", filter.category);
@@ -37,7 +40,7 @@ export class ProductService {
          options.search = search;
 
           return this._http
-                   .get(`${this._backendUri}/products${this.consulta}`, options)
+                   .get(`${this._backendUri}/products`, options)
                    .map((data: Response): Product[] => Product.fromJsonToList(data.json()));
     }
            
